@@ -69,13 +69,6 @@ p {
   padding: 0;
 }
 
-.notes-list li {
-  background: #f9f9f9;
-  margin: 5px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
 button {
   margin-right: 10px;
   padding: 10px 20px;
@@ -87,7 +80,7 @@ button {
 }
 
 button:hover {
-  scale: 1.1;
+  transform: scale(1.1);
 }
 
 .dropdown {

@@ -30,6 +30,18 @@ This project is a web-based voice note-taking application that leverages the Web
    ```
 5. Open your browser and navigate to the server address (usually `http://localhost:3000`).
 
+## Deployment
+
+- The production entry file is `index.html` at the project root. Ensure your static host serves this file.
+- If using GitHub Pages with a custom domain, the `CNAME` must match your DNS `A/ALIAS/CNAME` records. Mismatched domains can cause 404s.
+- Microphone access requires HTTPS in production (or `http://localhost`). Use an HTTPS-capable static host.
+
+## Notes on Browser Support
+
+- The app uses the Web Speech API (`SpeechRecognition`). It is supported in Chromium-based browsers and Safari with prefixes. Unsupported browsers will show a basic notice.
+
+## Files
+
 ## Usage
 
 - Use the dropdown to select your preferred language for speech recognition.
@@ -41,8 +53,9 @@ This project is a web-based voice note-taking application that leverages the Web
 
 ## File Overview
 
-- `index-START.html`: The main app interface with full features.
-- `index-FINISHED.html`: A simpler demo showcasing basic speech detection.
+- `index.html`: Deployable entry with full features.
+- `index-START.html`: Full-featured app variant used as source.
+- `index-FINISHED.html`: Simpler demo showcasing basic speech detection.
 - `script.js`: JavaScript logic handling speech recognition, note management, and UI interactions.
 - `style.css`: Stylesheet for the app's appearance.
 - `package.json`: Project metadata and scripts.
