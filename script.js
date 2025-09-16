@@ -53,7 +53,49 @@ function displayNotes() {
   notesList.innerHTML = ""; //Clear the list
   notes.forEach((note, index) => {
     const li = document.createElement("li");
-    li.textContent = note;
+
+    const span = document.createElement("span");
+    span.textContent = note;
+    li.appendChild(span);
+
+    //Create an edit button for each note
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.style.backgroundColor = "#4caf50"; //Add some style to the button
+    editButton.style.color = "#fff";
+    editButton.style.border = "none";
+    editButton.style.borderRadius = "10px";
+    editButton.style.marginLeft = "10px";
+
+    editButton.addEventListener("click", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = span.textContent;
+      li.replaceChild(input, span);
+      input.focus();
+
+      // Save edited note on Enter key press or when input loses focus
+      function saveEdit() {
+        if (input.value.trim() !== "") {
+          notes[index] = input.value.trim();
+          displayNotes();
+        } else {
+          displayNotes();
+        }
+      }
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          saveEdit();
+        }
+      });
+
+      input.addEventListener("blur", () => {
+        saveEdit();
+      });
+    });
+
+    li.appendChild(editButton);
 
     //Create a delete button for each note
     const deleteButton = document.createElement("button");
@@ -62,6 +104,7 @@ function displayNotes() {
     deleteButton.style.color = "#fff";
     deleteButton.style.border = "none";
     deleteButton.style.borderRadius = "10px";
+    deleteButton.style.marginLeft = "10px";
     deleteButton.addEventListener("click", () => {
       notes.splice(index, 1); //Removes the note at the current index
       displayNotes(); //Refresh the notes list
@@ -70,19 +113,6 @@ function displayNotes() {
     notesList.appendChild(li); //Add the note to the list
   });
 }
-
-//Create an edit button
-const editButton = document.createElement("button");
-editButton.textContent = "Edit";
-editButton.style.backgroundColor = "#4caf50"; //Add some style to the button
-editButton.style.color = "#fff";
-editButton.style.border = "none";
-editButton.style.borderRadius = "10px";
-editButton.addEventListener("click", () => {
-  const input = document.createElement("input");
-  input.type = "text";
-  input.value = notes;
-});
 
 //Save notes to local storage
 saveButton.addEventListener("click", () => {
