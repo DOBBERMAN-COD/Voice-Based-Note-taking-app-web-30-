@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Voice Notes</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="words" contenteditable></div>
+
+    <div id="app">
+      <h1>Voice-Based Note-Taking App</h1>
+      <div class="controls">
+        <div class="dropdown">
+          <label for="language-select">Select language:</label>
+          <select id="language-select">
+            <option value="en-US">English(US)</option>
+            <option value="es-ES">Spanish(Spain)</option>
+            <option value="fr-FR">French(France)</option>
+            <option value="de-DE">German(Germany)</option>
+            <option value="sw">Swahili(Kenya)</option>
+          </select>
+        </div>
+
+        <button class="save-notes">Save Notes</button>
+        <button class="clear-notes">Clear Notes</button>
+        <button id="export-notes">Export Notes</button>
+        <button id="dark-mode-toggle">Toggle Dark Mode</button>
+      </div>
+
+      <ul class="notes-list"></ul>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

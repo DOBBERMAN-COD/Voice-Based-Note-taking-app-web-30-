@@ -1,8 +1,23 @@
 window.SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 
-//Selectors
-const recognition = new SpeechRecognition();
+// Selectors
+// Guard to ensure API exists before using :D
+if (!window.SpeechRecognition) {
+  alert(
+    "SpeechRecognition is not supported in this browser. Please use Chrome or Edge."
+  );
+}
+
+const recognition = window.SpeechRecognition
+  ? new SpeechRecognition()
+  : {
+      start: () => {},
+      stop: () => {},
+      addEventListener: () => {},
+      lang: "en-US",
+      interimResults: false,
+    };
 const words = document.querySelector(".words");
 const notesList = document.querySelector(".notes-list");
 const saveButton = document.querySelector(".save-notes");
@@ -13,11 +28,11 @@ const exportButton = document.querySelector("#export-notes");
 recognition.interimResults = true;
 
 let p = document.createElement("p");
-words.appendChild(p);
+words && words.appendChild(p);
 
-let notes = []; //Array to store notes
+let notes = [];
 
-//toggle dark mode
+// Toggle dark mode
 darkModeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 });
@@ -30,74 +45,100 @@ recognition.addEventListener("result", (e) => {
 
   p.textContent = transcript;
   if (e.results[0].isFinal) {
-    //Save the final transcript as a note
+    // Save the final transcript as a note
     notes.push(transcript);
     displayNotes();
     p = document.createElement("p");
-    words.appendChild(p);
+    words && words.appendChild(p);
   }
 });
 
 recognition.addEventListener("end", () => recognition.start());
 
 recognition.lang = "en-US";
-recognition.start();
+if (window.isSecureContext !== false && window.SpeechRecognition) {
+  recognition.start();
+}
 
-//Update recognition language when the user selects a new language from the dropdown
 languageSelect.addEventListener("change", () => {
+  if (!window.SpeechRecognition) return;
+  const wasRunning = true;
+  try {
+    recognition.stop();
+  } catch {}
   recognition.lang = languageSelect.value;
+  try {
+    recognition.start();
+  } catch {}
 });
 
 //Function to display notes
 function displayNotes() {
-  notesList.innerHTML = ""; //Clear the list
+  notesList.innerHTML = ""; // Clear the list
   notes.forEach((note, index) => {
     const li = document.createElement("li");
-    li.textContent = note;
+    // Note text container
+    const span = document.createElement("span");
+    span.textContent = note;
+    li.appendChild(span);
 
-    //Create a delete button for each note
+    // Edit button per note
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.style.backgroundColor = "#4caf50";
+    editButton.style.color = "#fff";
+    editButton.style.border = "none";
+    editButton.style.borderRadius = "10px";
+    editButton.addEventListener("click", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = notes[index];
+      li.replaceChild(input, span);
+      input.focus();
+      const commit = () => {
+        notes[index] = input.value;
+        displayNotes();
+      };
+      input.addEventListener("keydown", (evt) => {
+        if (evt.key === "Enter") commit();
+      });
+      input.addEventListener("blur", commit);
+    });
+
+    // Create a delete button for each note
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
-    deleteButton.style.backgroundColor = "#ff4d4d"; //Adds some styling to the button
+    deleteButton.style.backgroundColor = "#ff4d4d"; // Adds some styling to the button
     deleteButton.style.color = "#fff";
     deleteButton.style.border = "none";
     deleteButton.style.borderRadius = "10px";
     deleteButton.addEventListener("click", () => {
-      notes.splice(index, 1); //Removes the note at the current index
-      displayNotes(); //Refresh the notes list
+      notes.splice(index, 1); // Remove the note at the current index
+      displayNotes(); // Refresh the notes list
     });
-    li.appendChild(deleteButton); //Add the delete button to the note
-    notesList.appendChild(li); //Add the note to the list
+
+    li.appendChild(editButton);
+    li.appendChild(deleteButton); // Add the delete button to the note
+    notesList.appendChild(li); // Add the note to the list
   });
 }
 
-//Create an edit button
-const editButton = document.createElement("button");
-editButton.textContent = "Edit";
-editButton.style.backgroundColor = "#4caf50"; //Add some style to the button
-editButton.style.color = "#fff";
-editButton.style.border = "none";
-editButton.style.borderRadius = "10px";
-editButton.addEventListener("click", () => {
-  const input = document.createElement("input");
-  input.type = "text";
-  input.value = notes;
-});
+// Removed unused global Edit button; implemented per-note Edit above
 
-//Save notes to local storage
+// Save notes to local storage
 saveButton.addEventListener("click", () => {
   localStorage.setItem("notes", JSON.stringify(notes));
   alert("Notes saved!");
 });
 
-//Clear notes
+// Clear notes
 clearButton.addEventListener("click", () => {
   notes = [];
   displayNotes();
   alert("All notes cleared!");
 });
 
-//Load notes from local storage on page load
+// Load notes from local storage on page load
 window.addEventListener("load", () => {
   const savedNotes = JSON.parse(localStorage.getItem("notes"));
   if (savedNotes) {
@@ -106,7 +147,7 @@ window.addEventListener("load", () => {
   }
 });
 
-//Export notes as a text file
+// Export notes as a text file
 exportButton.addEventListener("click", () => {
   const blob = new Blob([notes.join("\n")], { type: "text/plain" });
   const url = URL.createObjectURL(blob);

@@ -2,13 +2,13 @@
   "name": "gum",
   "version": "1.0.0",
   "description": "",
-  "main": "scripts.js",
+  "main": "script.js",
   "scripts": {
-    "start": "browser-sync start --directory --server --files \"*.css, *.html, *.js\""
+    "start": "browser-sync start --server --files \"*.css, *.html, *.js\" --startPath index.html"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.12.5 <2.23.2"
+    "browser-sync": "^2.29.3"
   }
 }
