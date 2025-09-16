@@ -112,6 +112,7 @@ function displayNotes() {
     deleteButton.style.color = "#fff";
     deleteButton.style.border = "none";
     deleteButton.style.borderRadius = "10px";
+    deleteButton.style.marginLeft = "10px";
     deleteButton.addEventListener("click", () => {
       notes.splice(index, 1); // Remove the note at the current index
       displayNotes(); // Refresh the notes list
